@@ -1,21 +1,9 @@
 import sys
 from PyQt6.QtCore import Qt, QBasicTimer, pyqtSignal
 from PyQt6.QtGui import QPainter, QColor
-from PyQt6.QtWidgets import (QWidget, QMainWindow, QLineEdit, QLabel,
-                             QHBoxLayout, QVBoxLayout, QPushButton, QApplication, QGridLayout)
+from PyQt6.QtWidgets import (QWidget, QMainWindow, QLineEdit, QLabel, QFontDialog,
+                             QHBoxLayout, QMessageBox, QPushButton, QApplication, QGridLayout)
 class MyApp(QMainWindow):
-    def __init__(self):
-        super().__init__()
-        self.initUI()
-
-    def initUI(self):
-        widget = MyWidget()
-        self.setCentralWidget(widget)
-        self.setGeometry(300, 300, 350, 250)
-        self.setWindowTitle('My App')
-        self.show()
-
-class MyWidget(QWidget):
     def __init__(self):
         super().__init__()
         self.initUI()
@@ -26,16 +14,18 @@ class MyWidget(QWidget):
 
         path = QLabel('文件夹路径')
         rep = QLabel('替换版本')
-        pathEdit = QLineEdit()
-        pathEdit.textChanged[str].connect(self.onChanged)
-        repEdit = QLineEdit()
+        self.pathEdit = QLineEdit()
+        self.pathEdit.textChanged[str].connect(self.onChanged)
+        self.repEdit = QLineEdit()
+        self.repEdit.textChanged[str].connect(self.onChanged)
         grid.addWidget(path, 1, 0)
-        grid.addWidget(pathEdit, 1, 1)
+        grid.addWidget(self.pathEdit, 1, 1)
 
         grid.addWidget(rep, 2, 0)
-        grid.addWidget(repEdit, 2, 1)
+        grid.addWidget(self.repEdit, 2, 1)
 
         button1 = QPushButton('一键替换')
+        button1.clicked.connect(self.buttonClicked)
         qbtn = QPushButton('退出')
         qbtn.clicked.connect(QApplication.instance().quit)
         hbox = QHBoxLayout()
@@ -43,14 +33,38 @@ class MyWidget(QWidget):
         hbox.addWidget(button1)
         grid.addLayout(hbox, 3,1)
 
-        self.setLayout(grid)
-        # self.setGeometry(300, 300, 350, 250)
-        # self.setWindowTitle('My App')
-        # self.show()
+        self.statusBar()
+        self.path = ""
+        self.version = ""
+        widget = QWidget()
+        self.setCentralWidget(widget)
+        self.centralWidget().setLayout(grid)
+        self.setGeometry(300, 300, 350, 250)
+        self.setWindowTitle('My App')
+        self.show()
+
+        # QMessageBox.question(self, 'Message',
+        #                      "Are you sure to quit?", QMessageBox.StandardButton.Yes |
+        #                      QMessageBox.StandardButton.No, QMessageBox.StandardButton.No)
     def onChanged(self, text):
-        a = text
-        # self.lbl.setText(text)
-        # self.lbl.adjustSize()
+        sender = self.sender()
+        print(sender)
+        if sender == self.pathEdit:
+            print('path:' +text)
+            self.path = text
+        else :
+            print('version:' + text)
+            self.version = text
+
+    def buttonClicked(self):
+        msg = '路径是:' + self.path + ', 版本是:' + self.version
+        if self.path == "":
+            QMessageBox.warning(self, "警告", "路径不能为空！")
+        elif self.version == "":
+            QMessageBox.warning(self, "警告", "版本不能为空！")
+        else:
+            print(msg)
+            self.statusBar().showMessage(msg)
 
 def main():
     app = QApplication([])
