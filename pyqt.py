@@ -1,6 +1,7 @@
 import sys
 import re
 import os.path
+from PyQt6.QtCore import QDate, QTime, QDateTime, Qt
 from PyQt6.QtWidgets import (QWidget, QMainWindow, QLineEdit, QLabel,
                              QHBoxLayout, QMessageBox, QPushButton, QApplication, QGridLayout)
 class MyApp(QMainWindow):
@@ -43,9 +44,6 @@ class MyApp(QMainWindow):
         self.setWindowTitle('My App')
         self.show()
 
-        # QMessageBox.question(self, 'Message',
-        #                      "Are you sure to quit?", QMessageBox.StandardButton.Yes |
-        #                      QMessageBox.StandardButton.No, QMessageBox.StandardButton.No)
     def onChanged(self, text):
         sender = self.sender()
         print(sender)
@@ -73,12 +71,17 @@ class MyApp(QMainWindow):
             QMessageBox.warning(self, "警告", "非法路径！")
         if not re.match(r'[Vv][0-9].[0-9]+', self.version):
             QMessageBox.warning(self, "警告", "版本非法！")
+        now = QDate.currentDate()
+        self.date = now.toString(Qt.DateFormat.ISODate)
+        self.date = re.sub('-', "", self.date)
+        print(self.date)
         for parent, dirnames, filenames in os.walk(self.path):
             for filename in filenames:
                 print(os.path.join(parent, filename))
                 newName = re.sub(r'[Vv][0-9].[0-9]+', self.version, filename)
+                newName = re.sub(r'[0-9]{8}', self.date, newName)
                 print(os.path.join(parent, newName))
-                os.rename(os.path.join(parent, filename), os.path.join(parent, newName))
+                #os.rename(os.path.join(parent, filename), os.path.join(parent, newName))
 
 
 def main():
