@@ -16,8 +16,10 @@ class MyApp(QMainWindow):
         path = QLabel('文件夹路径')
         rep = QLabel('替换版本')
         self.pathEdit = QLineEdit()
+        self.pathEdit.setPlaceholderText("D:\\Users\\ws\\PycharmProjects\\pythonProject\\朝阳置业-V3.0\\")
         self.pathEdit.textChanged[str].connect(self.onChanged)
         self.repEdit = QLineEdit()
+        self.repEdit.setPlaceholderText("V3.0")
         self.repEdit.textChanged[str].connect(self.onChanged)
         grid.addWidget(path, 1, 0)
         grid.addWidget(self.pathEdit, 1, 1)
@@ -40,7 +42,7 @@ class MyApp(QMainWindow):
         widget = QWidget()
         self.setCentralWidget(widget)
         self.centralWidget().setLayout(grid)
-        self.setGeometry(300, 300, 350, 250)
+        self.setGeometry(300, 300, 550, 250)
         self.setWindowTitle('My App')
         self.show()
 
@@ -81,7 +83,7 @@ class MyApp(QMainWindow):
                 newName = re.sub(r'[Vv][0-9].[0-9]+', self.version, filename)
                 newName = re.sub(r'[0-9]{8}', self.date, newName)
                 print(os.path.join(parent, newName))
-                #os.rename(os.path.join(parent, filename), os.path.join(parent, newName))
+                os.rename(os.path.join(parent, filename), os.path.join(parent, newName))
 
 
 def main():
