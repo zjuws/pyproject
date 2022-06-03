@@ -1,7 +1,7 @@
 import sys
-from PyQt6.QtCore import Qt, QBasicTimer, pyqtSignal
-from PyQt6.QtGui import QPainter, QColor
-from PyQt6.QtWidgets import (QWidget, QMainWindow, QLineEdit, QLabel, QFontDialog,
+import re
+import os.path
+from PyQt6.QtWidgets import (QWidget, QMainWindow, QLineEdit, QLabel,
                              QHBoxLayout, QMessageBox, QPushButton, QApplication, QGridLayout)
 class MyApp(QMainWindow):
     def __init__(self):
@@ -56,6 +56,7 @@ class MyApp(QMainWindow):
             print('version:' + text)
             self.version = text
 
+
     def buttonClicked(self):
         msg = '路径是:' + self.path + ', 版本是:' + self.version
         if self.path == "":
@@ -65,6 +66,20 @@ class MyApp(QMainWindow):
         else:
             print(msg)
             self.statusBar().showMessage(msg)
+            self.walkPath()
+
+    def walkPath(self):
+        if not os.path.exists(self.path):
+            QMessageBox.warning(self, "警告", "非法路径！")
+        if not re.match(r'[Vv][0-9].[0-9]+', self.version):
+            QMessageBox.warning(self, "警告", "版本非法！")
+        for parent, dirnames, filenames in os.walk(self.path):
+            for filename in filenames:
+                print(os.path.join(parent, filename))
+                newName = re.sub(r'[Vv][0-9].[0-9]+', self.version, filename)
+                print(os.path.join(parent, newName))
+                os.rename(os.path.join(parent, filename), os.path.join(parent, newName))
+
 
 def main():
     app = QApplication([])
