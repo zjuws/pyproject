@@ -1,7 +1,7 @@
 import sys
 import re
 import os.path
-from PyQt6.QtCore import QDate, QTime, QDateTime, Qt
+from PyQt6.QtCore import QDate, Qt
 from PyQt6.QtWidgets import (QWidget, QMainWindow, QLineEdit, QLabel,
                              QHBoxLayout, QMessageBox, QPushButton, QApplication, QGridLayout)
 class MyApp(QMainWindow):
@@ -71,8 +71,10 @@ class MyApp(QMainWindow):
     def walkPath(self):
         if not os.path.exists(self.path):
             QMessageBox.warning(self, "警告", "非法路径！")
+            return
         if not re.match(r'[Vv][0-9].[0-9]+', self.version):
             QMessageBox.warning(self, "警告", "版本非法！")
+            return
         now = QDate.currentDate()
         self.date = now.toString(Qt.DateFormat.ISODate)
         self.date = re.sub('-', "", self.date)
