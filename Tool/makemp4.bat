@@ -1,0 +1,1 @@
+ffmpeg -y -r 15.0 -i %%d.png -c:v libx264 -vf fps=15.0 -pix_fmt yuv420p -crf 17 -preset veryslow video.mp4

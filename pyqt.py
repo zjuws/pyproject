@@ -2,16 +2,30 @@ import sys
 import re
 import os.path
 from PyQt6.QtCore import QDate, Qt
-from PyQt6.QtWidgets import (QWidget, QMainWindow, QLineEdit, QLabel,
+from PyQt6.QtWidgets import (QWidget, QMainWindow, QLineEdit, QLabel, QCheckBox,
                              QHBoxLayout, QMessageBox, QPushButton, QApplication, QGridLayout)
 class MyApp(QMainWindow):
     def __init__(self):
         super().__init__()
         self.initUI()
 
+    def modifyDate(self, state):
+        if state == Qt.CheckState.Checked.value:
+            self.modifyd = True
+            print("modify date");
+        else:
+            self.modifyd = False
+            print("not date");
+
+
     def initUI(self):
         grid = QGridLayout()
         grid.setSpacing(10)
+        self.modifyd = True
+        qb = QCheckBox("是否修改日期", self)
+        qb.toggle()
+        qb.stateChanged.connect(self.modifyDate)
+        grid.addWidget(qb, 0, 0)
 
         path = QLabel('文件夹路径')
         rep = QLabel('替换版本')
@@ -83,7 +97,8 @@ class MyApp(QMainWindow):
             for filename in filenames:
                 print(os.path.join(parent, filename))
                 newName = re.sub(r'[Vv][0-9].[0-9]+', self.version, filename)
-                newName = re.sub(r'[0-9]{8}', self.date, newName)
+                if self.modifyd:
+                    newName = re.sub(r'[0-9]{8}', self.date, newName)
                 print(os.path.join(parent, newName))
                 os.rename(os.path.join(parent, filename), os.path.join(parent, newName))
 

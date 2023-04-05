@@ -35,5 +35,5 @@ news_url = "https://news.google.com/news/rss/?ned=us&gl=US&hl=en"
 sports_url = "https://news.google.com/news/rss/headlines/section/topic/SPORTS.en_in/Sports?ned=in&hl=en-IN&gl=IN"
 
 # now call news function with any of these url or BOTH
-news(news_url, 10)
-news(sports_url, 5)
+news(news_url, 5)
+#news(sports_url, 5)
